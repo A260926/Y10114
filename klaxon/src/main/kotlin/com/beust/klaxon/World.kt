@@ -88,6 +88,20 @@ class World(var status : Status, val pathMatchers: List<PathMatcher> = emptyList
         return valueStack.size > 1
     }
 
+    /**
+     * Close the container currently on top of the stacks and move back to its parent
+     * status. A root container transitions to [Status.IN_FINISHED_VALUE] instead.
+     */
+    fun closeContainer() {
+        status = if (hasValues()) {
+            popStatus()
+            popValue()
+            peekStatus()
+        } else {
+            Status.IN_FINISHED_VALUE
+        }
+    }
+
     internal fun foundValue() {
         val first = valueStack.peekFirst()
         if (first is JsonObject && first.isNotEmpty()) {

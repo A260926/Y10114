@@ -114,16 +114,8 @@ internal class KlaxonParser(
                 Status.IN_OBJECT,
                 RIGHT_BRACE.tokenType, { world: World, _: Token ->
                 world.foundValue()
-                with(world) {
-                    status = if (hasValues()) {
-                        popStatus()
-                        popValue()
-                        peekStatus()
-                    } else {
-                        Status.IN_FINISHED_VALUE
-                    }
-                    this
-                }
+                world.closeContainer()
+                world
             })
 
             put(
@@ -194,16 +186,8 @@ internal class KlaxonParser(
                 Status.IN_ARRAY,
                 RIGHT_BRACKET.tokenType, { world: World, _: Token ->
                 world.foundValue()
-                with(world) {
-                    status = if (hasValues()) {
-                        popStatus()
-                        popValue()
-                        peekStatus()
-                    } else {
-                        Status.IN_FINISHED_VALUE
-                    }
-                    this
-                }
+                world.closeContainer()
+                world
             })
             put(
                 Status.IN_ARRAY,

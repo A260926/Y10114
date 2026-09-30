@@ -81,7 +81,8 @@ class Lexer(passedReader: Reader, val lenient: Boolean = false): Iterator<Token>
         var c = nextChar()
         val currentValue = StringBuilder()
 
-        while (!isDone && isSpace(c)) {
+        while (isSpace(c)) {
+            if (isDone) return EOF
             c = nextChar()
         }
 
@@ -171,7 +172,7 @@ class Lexer(passedReader: Reader, val lenient: Boolean = false): Iterator<Token>
         } else if (',' == c) {
             token = COMMA
             expectName = true
-        } else if (!isDone) {
+        } else {
             while (isValueLetter(c)) {
                 currentValue.append(c)
                 if (isDone || !isValueLetter(peekChar())) {
@@ -203,9 +204,6 @@ class Lexer(passedReader: Reader, val lenient: Boolean = false): Iterator<Token>
                 throw KlaxonException("Unexpected character at position ${index-1}"
                         + ": '$c' (ASCII: ${c.toInt()})'")
             }
-
-        } else {
-            token = EOF
         }
 
         return token
